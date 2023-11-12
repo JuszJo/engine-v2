@@ -115,6 +115,12 @@ class CollisionSystem {
 
                 currentEntity.speed *= -1;
             }
+            if(currentEntity.position.y < 0) {
+                currentEntity.position.y = 0;
+            }
+            if(currentEntity.position.y + currentEntity.size.height > 600) {
+                currentEntity.position.y = 600 - currentEntity.size.height;
+            }
         }
     }
 
@@ -131,6 +137,24 @@ class CollisionSystem {
             }
         }
     }
+}
+
+class GravitySystem {
+    entities: Array<Square> = []
+    gForce = 5
+
+    constructor(squares: Array<Square>) {
+        this.entities = squares
+    }
+
+    applyGravity() {
+        for(let i = 0; i < this.entities.length; ++i) {
+            const currentEntity = this.entities[i]
+
+            currentEntity.position.y += this.gForce
+        }
+    }
+
 }
 
 function transferEnergy(entity1: Square, entity2: Square) {
@@ -161,11 +185,15 @@ squareFactory.createSquare(300, 100, 50, 50, 5)
 
 const collider = new CollisionSystem(...squareFactory.getAll())
 
+const gravitySystem = new GravitySystem(squareFactory.getAll())
+
 function update() {
     if(drawingSurface) {
         drawingSurface.clearRect(0, 0, 800, 600);
 
         squareFactory.updateAll();
+        
+        gravitySystem.applyGravity();
 
         collider.checkWallCollision();
 

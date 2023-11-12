@@ -117,6 +117,12 @@ var CollisionSystem = /** @class */ (function () {
                 currentEntity.position.x = 800 - currentEntity.size.width;
                 currentEntity.speed *= -1;
             }
+            if (currentEntity.position.y < 0) {
+                currentEntity.position.y = 0;
+            }
+            if (currentEntity.position.y + currentEntity.size.height > 600) {
+                currentEntity.position.y = 600 - currentEntity.size.height;
+            }
         }
     };
     CollisionSystem.prototype.checkCollision = function () {
@@ -131,6 +137,20 @@ var CollisionSystem = /** @class */ (function () {
         }
     };
     return CollisionSystem;
+}());
+var GravitySystem = /** @class */ (function () {
+    function GravitySystem(squares) {
+        this.entities = [];
+        this.gForce = 5;
+        this.entities = squares;
+    }
+    GravitySystem.prototype.applyGravity = function () {
+        for (var i = 0; i < this.entities.length; ++i) {
+            var currentEntity = this.entities[i];
+            currentEntity.position.y += this.gForce;
+        }
+    };
+    return GravitySystem;
 }());
 function transferEnergy(entity1, entity2) {
     if (Math.abs(entity1.speed) > Math.abs(entity2.speed)) {
@@ -149,10 +169,12 @@ squareFactory.createSquare(425, 50, 40, 40, -5);
 squareFactory.createSquare(525, 50, 40, 40, -5);
 squareFactory.createSquare(300, 100, 50, 50, 5);
 var collider = new (CollisionSystem.bind.apply(CollisionSystem, __spreadArray([void 0], squareFactory.getAll(), false)))();
+var gravitySystem = new GravitySystem(squareFactory.getAll());
 function update() {
     if (drawingSurface) {
         drawingSurface.clearRect(0, 0, 800, 600);
         squareFactory.updateAll();
+        gravitySystem.applyGravity();
         collider.checkWallCollision();
         collider.checkCollision();
         requestAnimationFrame(update);
