@@ -2,31 +2,94 @@ const canvas = document.querySelector('canvas');
 
 const drawingSurface = canvas && canvas.getContext('2d');
 
-interface Entity {
-    name: string,
-    position: {
-        x: number,
-        y: number,
-    },
-    size: {
-        width: number,
-        height: number,
-    },
-    speed?: number
+class Square {
+    name = "square"
+    position = {
+        x: 0,
+        y: 0
+    }
+    size = {
+        width: 0,
+        height: 0,
+    }
+    speed = 0
+    color = "black"
+
+    constructor(x: number, y: number, width: number, height: number, speed: number) {
+        this.position.x = x;
+        this.position.y = y;
+        this.size.width = width;
+        this.size.height = height
+        this.speed = speed;
+    }
+
+    draw() {
+        if(drawingSurface) {
+            drawingSurface.fillStyle = this.color
+    
+            drawingSurface.fillRect(this.position.x, this.position.y, this.size.width, this.size.height);
+        }
+    }
+
+    update() {
+        this.draw()
+
+        this.position.x += this.speed;
+    }
+}
+
+class SquareFactory {
+    squares: Array<Square> = [];
+
+    constructor(...createdSquares: Array<Square>) {
+        for(let i = 0; i < createdSquares.length; ++i) {
+            this.squares.push(createdSquares[i])
+        }
+    }
+
+    createSquare(x: number, y: number, width: number, height: number, speed: number) {
+        this.addSquares(new Square(x, y, width, height, speed));
+    }
+
+    addSquares(...createdSquares: Array<Square>) {
+        for(let i = 0; i < createdSquares.length; ++i) {
+            this.squares.push(createdSquares[i])
+        }
+    }
+
+    updateAll() {
+        for(let i = 0; i < this.squares.length; ++i) {
+            const currentSquare = this.squares[i]
+
+            currentSquare.update();
+        }
+    }
+
+    getAll() {
+        const squareArray: Array<Square> = []
+
+        for(let i = 0; i < this.squares.length; ++i) {
+            squareArray[i] = this.squares[i]
+        }
+
+        return squareArray;
+    }
 }
 
 class CollisionSystem {
-    collisionEntities: Array<Entity> = []
+    collisionEntities: Array<Square> = []
 
-    constructor(...entities: Array<Entity>) {
+    constructor(...entities: Array<Square>) {
         this.collisionEntities =  [...entities]
     }
 
-    addEntities(entity: Entity) {
-        this.collisionEntities.push(entity)
+    addEntities(...entities: Array<Square>) {
+        for(let i = 0; i < entities.length; ++i) {
+            this.collisionEntities.push(entities[i])
+        }
     }
 
-    isColliding(entity1: Entity, entity2: Entity): Boolean {
+    isColliding(entity1: Square, entity2: Square): Boolean {
         if(
             entity1.position.x + entity1.size.width > entity2.position.x &&
             entity1.position.x < entity2.position.x + entity2.size.width &&
@@ -38,6 +101,23 @@ class CollisionSystem {
         else return false
     }
 
+    checkWallCollision() {
+        for(let i = 0; i < this.collisionEntities.length; ++i) {
+            const currentEntity = this.collisionEntities[i]
+
+            if(currentEntity.position.x < 0) {
+                currentEntity.position.x = 0;
+
+                currentEntity.speed *= -1;
+            }
+            if(currentEntity.position.x + currentEntity.size.width > 800) {
+                currentEntity.position.x = 800 - currentEntity.size.width;
+
+                currentEntity.speed *= -1;
+            }
+        }
+    }
+
     checkCollision() {
         for(let i = 0; i < this.collisionEntities.length - 1; ++i) {
             const currentEntity = this.collisionEntities[i];
@@ -46,54 +126,53 @@ class CollisionSystem {
                 const nextEntity = this.collisionEntities[j];
                 
                 if(this.isColliding(currentEntity, nextEntity)) {
-                    nextEntity.speed = 0;
+                    transferEnergy(currentEntity, nextEntity);
                 }
             }
         }
     }
 }
 
-const square1: Entity = {
-    name: "one",
-    position: {
-        x: 50,
-        y: 50,
-    },
-    size: {
-        width: 100,
-        height: 100,
+function transferEnergy(entity1: Square, entity2: Square) {
+    if(Math.abs(entity1.speed) > Math.abs(entity2.speed)) {
+        entity2.speed = entity1.speed
+
+        entity1.speed = 0;
+    }
+    else {
+        
+        entity1.speed = entity2.speed;
+
+        entity2.speed = 0;
     }
 }
 
-const square2: Entity = {
-    name: "two",
-    position: {
-        x: 650,
-        y: 50,
-    },
-    size: {
-        width: 100,
-        height: 100,
-    },
-    speed: -10
-}
+const squareFactory = new SquareFactory()
 
-const collider = new CollisionSystem(square1, square2)
+squareFactory.createSquare(25, 50, 40, 40, 5)
+
+squareFactory.createSquare(125, 50, 40, 40, 0)
+
+squareFactory.createSquare(425, 50, 40, 40, -5)
+
+squareFactory.createSquare(525, 50, 40, 40, -5)
+
+squareFactory.createSquare(300, 100, 50, 50, 5)
+
+const collider = new CollisionSystem(...squareFactory.getAll())
 
 function update() {
     if(drawingSurface) {
         drawingSurface.clearRect(0, 0, 800, 600);
 
-        drawingSurface.fillRect(square1.position.x, square1.position.y, square1.size.width, square1.size.height);
+        squareFactory.updateAll();
 
-        square2.speed ? square2.position.x += square2.speed : null;
+        collider.checkWallCollision();
 
-        drawingSurface.fillRect(square2.position.x, square2.position.y, square2.size.width, square2.size.height);
-
-        collider.checkCollision()
+        collider.checkCollision();
     
-        requestAnimationFrame(update)
+        requestAnimationFrame(update);
     }
 }
 
-requestAnimationFrame(update)
+requestAnimationFrame(update);
