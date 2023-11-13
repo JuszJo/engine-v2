@@ -61,9 +61,9 @@ const inputSystem = new InputSystem(squareFactory.getAll()[0])
 
 inputSystem.listen()
 
-const collider = new CollisionSystem(...squareFactory.getAll(), platform)
-
 const gravitySystem = new GravitySystem(squareFactory.getAll())
+
+const collider = new CollisionSystem(gravitySystem, ...squareFactory.getAll(), platform)
 
 function update() {
     if(drawingSurface) {

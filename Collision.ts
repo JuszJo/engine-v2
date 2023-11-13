@@ -1,3 +1,4 @@
+import GravitySystem from "./GravitySystem.js";
 import Square from "./Square";
 
 function transferEnergy(entity1: Square, entity2: Square) {
@@ -15,8 +16,11 @@ function transferEnergy(entity1: Square, entity2: Square) {
 
 export default class CollisionSystem {
     collisionEntities: Array<Square> = []
+    gravitySystem: GravitySystem
 
-    constructor(...entities: Array<Square>) {
+    constructor(gravitySystem: GravitySystem, ...entities: Array<Square>) {
+        this.gravitySystem = gravitySystem
+
         this.collisionEntities =  [...entities]
     }
 
@@ -54,9 +58,13 @@ export default class CollisionSystem {
             }
             if(currentEntity.position.y < 0) {
                 currentEntity.position.y = 0;
+
+                currentEntity.canJump = false
             }
             if(currentEntity.position.y + currentEntity.size.height > 600) {
                 currentEntity.position.y = 600 - currentEntity.size.height;
+
+                currentEntity.canJump = true
             }
         }
     }
@@ -83,9 +91,13 @@ export default class CollisionSystem {
                         square.position.y -= (square.position.y + square.size.height) - platform.position.y
 
                         square.speed.y = 0
+
+                        square.canJump = true
                     }
                     if(square.speed.y < 0) {
+                        square.position.y += (platform.position.y + platform.size.height) - square.position.y
 
+                        square.speed.y = 0
                     }
 
                     // transferEnergy(currentEntity, nextEntity);

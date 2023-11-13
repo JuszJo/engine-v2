@@ -27,6 +27,7 @@ export default class Square {
         left: false,
         right: false,
     }
+    canJump = false
     maxSpeed = 10
     color = "black"
 
@@ -50,6 +51,7 @@ export default class Square {
     handleKeyDown(key: String) {
         if(key == 'w') {
             // this.velocity
+            this.movement.up = true
         }
         if(key == 's') {
 
@@ -65,6 +67,7 @@ export default class Square {
     handleKeyUp(key: String) {
         if(key == 'w') {
             // this.velocity
+            this.movement.up = false
         }
         if(key == 's') {
             
@@ -78,8 +81,10 @@ export default class Square {
     }
 
     move() {
-        if(this.movement.up) {
-            
+        if(this.movement.up && this.canJump) {
+            this.velocity.y = -20
+
+            this.canJump = false
         }
         if(this.movement.down) {
 

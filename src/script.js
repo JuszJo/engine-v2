@@ -37,8 +37,8 @@ const platform = new Platform(drawingSurface, 350, 500, 200, 20, { x: 0, y: 0 })
 // squareFactory.createSquare(300, 100, 50, 50, squareSpeed)
 const inputSystem = new InputSystem(squareFactory.getAll()[0]);
 inputSystem.listen();
-const collider = new CollisionSystem(...squareFactory.getAll(), platform);
 const gravitySystem = new GravitySystem(squareFactory.getAll());
+const collider = new CollisionSystem(gravitySystem, ...squareFactory.getAll(), platform);
 function update() {
     if (drawingSurface) {
         drawingSurface.clearRect(0, 0, 800, 600);

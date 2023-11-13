@@ -27,6 +27,7 @@ export default class Square {
             left: false,
             right: false,
         };
+        this.canJump = false;
         this.maxSpeed = 10;
         this.color = "black";
         this.position.x = x;
@@ -45,6 +46,7 @@ export default class Square {
     handleKeyDown(key) {
         if (key == 'w') {
             // this.velocity
+            this.movement.up = true;
         }
         if (key == 's') {
         }
@@ -58,6 +60,7 @@ export default class Square {
     handleKeyUp(key) {
         if (key == 'w') {
             // this.velocity
+            this.movement.up = false;
         }
         if (key == 's') {
         }
@@ -69,7 +72,9 @@ export default class Square {
         }
     }
     move() {
-        if (this.movement.up) {
+        if (this.movement.up && this.canJump) {
+            this.velocity.y = -20;
+            this.canJump = false;
         }
         if (this.movement.down) {
         }

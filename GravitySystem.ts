@@ -2,7 +2,7 @@ import Square from "./Square.js"
 
 export default class GravitySystem {
     entities: Array<Square> = []
-    gForce = 1
+    gForce = 0.5
     applyG = true
 
     constructor(squares: Array<Square>) {

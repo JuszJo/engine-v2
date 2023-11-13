@@ -1,7 +1,7 @@
 export default class GravitySystem {
     constructor(squares) {
         this.entities = [];
-        this.gForce = 1;
+        this.gForce = 0.5;
         this.applyG = true;
         this.entities = squares;
     }
