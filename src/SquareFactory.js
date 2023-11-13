@@ -21,6 +21,9 @@ export default class SquareFactory {
             currentSquare.update();
         }
     }
+    getCount() {
+        return this.squares.length;
+    }
     getAll() {
         const squareArray = [];
         for (let i = 0; i < this.squares.length; ++i) {

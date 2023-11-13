@@ -4,11 +4,15 @@ import GravitySystem from "./GravitySystem.js";
 const canvas = document.querySelector('canvas');
 const drawingSurface = canvas && canvas.getContext('2d');
 const squareFactory = new SquareFactory(drawingSurface);
-squareFactory.createSquare(25, 50, 40, 40, 5);
-squareFactory.createSquare(125, 50, 40, 40, 0);
-squareFactory.createSquare(425, 50, 40, 40, -5);
-squareFactory.createSquare(525, 50, 40, 40, -5);
-squareFactory.createSquare(300, 100, 50, 50, 5);
+const squareSpeed = {
+    x: 0,
+    y: 0
+};
+squareFactory.createSquare(25, 50, 40, 40, squareSpeed);
+// squareFactory.createSquare(125, 50, 40, 40, squareSpeed)
+// squareFactory.createSquare(425, 50, 40, 40, squareSpeed)
+// squareFactory.createSquare(525, 50, 40, 40, squareSpeed)
+// squareFactory.createSquare(300, 100, 50, 50, squareSpeed)
 const collider = new CollisionSystem(...squareFactory.getAll());
 const gravitySystem = new GravitySystem(squareFactory.getAll());
 function update() {

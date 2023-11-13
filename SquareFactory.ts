@@ -6,13 +6,13 @@ export default class SquareFactory {
 
     constructor(drawingSurface: CanvasRenderingContext2D | null, ...createdSquares: Array<Square>) {
         this.drawingSurface = drawingSurface;
-        
+
         for(let i = 0; i < createdSquares.length; ++i) {
             this.squares.push(createdSquares[i])
         }
     }
 
-    createSquare(x: number, y: number, width: number, height: number, speed: number) {
+    createSquare(x: number, y: number, width: number, height: number, speed: {x: number, y: number}) {
         this.addSquares(new Square(this.drawingSurface, x, y, width, height, speed));
     }
 
@@ -28,6 +28,10 @@ export default class SquareFactory {
 
             currentSquare.update();
         }
+    }
+
+    getCount() {
+       return this.squares.length 
     }
 
     getAll() {

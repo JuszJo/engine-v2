@@ -1,16 +1,15 @@
 import Square from "./Square";
 
 function transferEnergy(entity1: Square, entity2: Square) {
-    if(Math.abs(entity1.speed) > Math.abs(entity2.speed)) {
-        entity2.speed = entity1.speed
+    if(Math.abs(entity1.speed.x) > Math.abs(entity2.speed.x)) {
+        entity2.speed.x = entity1.speed.x
 
-        entity1.speed = 0;
+        entity1.speed.x = 0;
     }
     else {
-        
-        entity1.speed = entity2.speed;
+        entity1.speed.x = entity2.speed.x;
 
-        entity2.speed = 0;
+        entity2.speed.x = 0;
     }
 }
 
@@ -46,12 +45,12 @@ export default class CollisionSystem {
             if(currentEntity.position.x < 0) {
                 currentEntity.position.x = 0;
 
-                currentEntity.speed *= -1;
+                currentEntity.speed.x *= -1;
             }
             if(currentEntity.position.x + currentEntity.size.width > 800) {
                 currentEntity.position.x = 800 - currentEntity.size.width;
 
-                currentEntity.speed *= -1;
+                currentEntity.speed.x *= -1;
             }
             if(currentEntity.position.y < 0) {
                 currentEntity.position.y = 0;
