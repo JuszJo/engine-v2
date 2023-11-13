@@ -17,7 +17,17 @@ export default class Square {
         x: 0,
         y: 0
     }
-    maxSpeed = 15
+    acceleration = {
+        x: 0.1,
+        y: 0.1
+    }
+    movement = {
+        up: false,
+        down: false,
+        left: false,
+        right: false,
+    }
+    maxSpeed = 10
     color = "black"
 
     constructor(drawingSurface: CanvasRenderingContext2D | null, x: number, y: number, width: number, height: number, speed: {x: number, y: number}) {
@@ -27,10 +37,6 @@ export default class Square {
         this.size.height = height;
         this.speed = speed
         this.drawingSurface = drawingSurface;
-        // this.velocity = {
-        //     x: 0,
-        //     y: 0
-        // }
     }
 
     draw() {
@@ -38,6 +44,51 @@ export default class Square {
             this.drawingSurface.fillStyle = this.color
 
             this.drawingSurface.fillRect(this.position.x, this.position.y, this.size.width, this.size.height);
+        }
+    }
+
+    handleKeyDown(key: String) {
+        if(key == 'w') {
+            // this.velocity
+        }
+        if(key == 's') {
+
+        }
+        if(key == 'a') {
+            this.movement.left = true
+        }
+        if(key == 'd') {
+            this.movement.right = true
+        }
+    }
+    
+    handleKeyUp(key: String) {
+        if(key == 'w') {
+            // this.velocity
+        }
+        if(key == 's') {
+            
+        }
+        if(key == 'a') {
+            this.movement.left = false
+        }
+        if(key == 'd') {
+            this.movement.right = false
+        }
+    }
+
+    move() {
+        if(this.movement.up) {
+            
+        }
+        if(this.movement.down) {
+
+        }
+        if(this.movement.left) {
+            this.velocity.x -= this.acceleration.x
+        }
+        if(this.movement.right) {
+            this.velocity.x += this.acceleration.x
         }
     }
 
@@ -61,11 +112,11 @@ export default class Square {
     }
 
     update() {
-        console.log(`${this.position.x} speed = ${this.speed.y}`);
-
         this.draw()
 
         this.limitSpeed()
+
+        this.move()
 
         this.speed.x += this.velocity.x;
 

@@ -53,7 +53,19 @@ export default class CollisionSystem {
             for (let j = i + 1; j < this.collisionEntities.length; ++j) {
                 const nextEntity = this.collisionEntities[j];
                 if (this.isColliding(currentEntity, nextEntity)) {
-                    transferEnergy(currentEntity, nextEntity);
+                    const collidables = {
+                        [currentEntity.name]: currentEntity,
+                        [nextEntity.name]: nextEntity
+                    };
+                    const square = collidables["square"];
+                    const platform = collidables["platform"];
+                    if (square.speed.y > 0) {
+                        square.position.y -= (square.position.y + square.size.height) - platform.position.y;
+                        square.speed.y = 0;
+                    }
+                    if (square.speed.y < 0) {
+                    }
+                    // transferEnergy(currentEntity, nextEntity);
                 }
             }
         }
