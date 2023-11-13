@@ -24,7 +24,7 @@ export default class Square {
     draw() {
         if(this.drawingSurface) {
             this.drawingSurface.fillStyle = this.color
-    
+
             this.drawingSurface.fillRect(this.position.x, this.position.y, this.size.width, this.size.height);
         }
     }
